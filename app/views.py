@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.views import View
 import razorpay
-from . models import Cart, Customer, OrderPlaced, Product
+from . models import Cart, Customer, OrderPlaced, Payment, Product
 from django.db.models import Count
 from . forms import CustomerRegistrationForm,CustomerProfileForm
 from django.contrib import messages
@@ -96,8 +96,9 @@ class updateAddress(View):
         return redirect("address")
 
 def orders(request):
-    orders = OrderPlaced.objects.filter(user=request.user)
-    return render(request, 'app/orders.html', {'orders': orders})
+    orders_placed = OrderPlaced.objects.filter(user=request.user)
+    orders_placed.save()
+    return render(request, 'app/orders.html',locals())
 
 def add_to_cart(request):
     user=request.user
@@ -137,32 +138,37 @@ def plus_cart(request):
             
         }
         return JsonResponse(data)
-class checkout(View):
-    def get(self,request):
+    
+    
+    
+class Checkout(View):
+    def get(self, request):
         user = request.user
-        add=Customer.objects.filter(user=user)
-        cart_items=Cart.objects.filter(user=user)
+        add = Customer.objects.filter(user=user)
+        cart_items = Cart.objects.filter(user=user)
         famount = 0
         for p in cart_items:
             value = p.quantity * p.product.discounted_price
-            amount = famount + value
-            totalamount = famount + 40
-            client = razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET))
-            data={"amount":"razoramount","currency":"IMR","receipt":"order_rcptid_12"}
-            payment_response = client.order.create(data=data)
-            print (payment_response)
-            order_id = payment_response['id']
-            order_status = payment_response['status']
-            if order_status == 'created':
-                payment = razorpay.Payment(
-                    user=user,
-                    amount = totalamount,
-                    razorpay_order_id=order_id,
-                    razorpay_payment_status  = order_status
-                )
-                payment.save()
-        return render(request,'app/checkout.html',locals())
-
+            famount = famount + value
+        totalamount = famount + 40
+        client  = razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET))
+        razoramount = int(totalamount * 100)  
+        data = {"amount":razoramount,"currency":"INR","receipt":"order_rcptid_12"}
+        payment_response = client.order.create(data=data)
+        print(payment_response)
+        order_id = payment_response['id']
+        order_status = payment_response['status']
+        if order_status == 'created':
+            payment=Payment(user=user,
+                                  amount=totalamount,
+                                  razorpay_order_id = order_id,
+                                  razorpay_payment_status = order_status
+                                  )
+        payment.save()
+        return render(request, 'app/checkout.html', locals())
+    
+    
+    
 def plus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
@@ -205,6 +211,8 @@ def minus_cart(request):
         }
         return JsonResponse(data)
     
+    
+    
 def remove_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
@@ -229,37 +237,29 @@ def payment_done(request):
         razorpay_order_id = request.GET.get('order_id')
         razorpay_payment_id = request.GET.get('payment_id')
         cust_id = request.GET.get('cust_id')
-
-        # Replace with your actual model to handle payments, not the Razorpay model
         payment = razorpay.Payment.objects.get(razorpay_order_id=razorpay_order_id)
 
-        # Verify signature
         razorpay_signature = request.GET.get('signature')
         params_dict = {
             'razorpay_order_id': razorpay_order_id,
             'razorpay_payment_id': razorpay_payment_id,
             'razorpay_signature': razorpay_signature
         }
-
-        # Verify payment signature
         client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
         try:
             client.utility.verify_payment_signature(params_dict)
 
-            # Update payment status
             payment.razorpay_payment_status = 'paid'
             payment.razorpay_payment_id = razorpay_payment_id
             payment.paid = True
             payment.save()
-
-            # Update the order status
             order = OrderPlaced.objects.get(razorpay_order_id=razorpay_order_id)
             order.payment = payment
             order.status = 'Paid'
             order.save()
 
             messages.success(request, "Payment successful! Your order is confirmed.")
-            return redirect('order_success')  # Redirect to order success page (change URL as needed)
+            return redirect('order_success') 
 
         except razorpay.errors.SignatureVerificationError:
             messages.error(request, "Payment failed! Signature mismatch.")

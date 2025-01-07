@@ -5,6 +5,23 @@
     max-width: 100%;
     height: auto;
 }
+.goodnessseccont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.goodnessseccont img {
+    max-width: 100%;  /* Ensures the image doesn't overflow its container */
+    height: auto;  /* Maintains aspect ratio */
+}
+
+.mlkpro {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
+}
 
 
 .owl-carousel .item{

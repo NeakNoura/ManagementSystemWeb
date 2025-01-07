@@ -1,8 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
-
 {% block title %}Checkout{% endblock title %}
-
 {% block main-content %}
     <div class="container">
         
@@ -69,18 +67,21 @@
 {% block payment-gateway %}
 <script>
     var options = {
-        key: "rzp_test_2TUHCJnGDCobwu",
-        amount: "{{razoramount}}", // Replace with actual amount
-        currency: "INR",
-        name: "Mavericks",
-        order_id: "{{order_id}}", // Replace with actual order ID
+        "key": "rzp_test_LxRqAytA5m1RfA",
+        "amount": "{{razoramount}}", // Replace with actual amount
+        "currency": "INR",
+        "name": "Neel Product",
+        "description":"Purchase Product",
+        "order_id": "{{order_id}}", // Replace with actual order ID
         handler: function (response) {
             console.log("Payment successful");
             var form = document.getElementById("myForm");
-            window.location.href = `http://localhost:8000/paymentdone?order_id=${response.razorpay_order_id}&payment_id=${response.razorpay_payment_id}&cust_id=${form.elements["custid"].value}`;
+            window.location.href = 
+            `http://localhost:8000/paymentdone?order_id=${response.razorpay_order_id}&payment_id=${response.
+            razorpay_payment_id}&cust_id=${form.elements["custid"].value}`
         },
-        theme: {
-            color: "#3399cc"
+        "theme": {
+            "color": "#3399cc"
         }
     };
 
@@ -93,7 +94,7 @@
     document.getElementById('rzp-button1').onclick = function (e) {
         console.log("Button clicked");
         rzp1.open();
-        e.preventDefault(); // Corrected the colon `:` to a semicolon `;`
+        e.preventDefault();
     };
 </script>
 
