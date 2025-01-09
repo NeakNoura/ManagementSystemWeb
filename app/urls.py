@@ -9,7 +9,7 @@ urlpatterns = [
     
     
     
-    path('',views.home),
+    path('',views.home,name='home'),
     path('category/<slug:val>',views.CategoryView.as_view(),name="category"),
     path('category-title/<val>',views.ProductDetail.as_view(),name="category-title"),
     path('product-detail/<int:pk>',views.ProductDetail.as_view(),name="product-detail"),
@@ -27,6 +27,9 @@ urlpatterns = [
     path('removecart/',views.remove_cart),
     path('paymentdone/',views.payment_done,name='paymentdone'),
     path('orders/',views.orders,name='orders'),
+    path('plus-wishlist/',views.plus_wishlist,name=''),
+    path('search/',views.search,name='search'),
+    path('minus-wishlist/',views.minus_wishlist,name=''),
     path('passwordchange/',auth_view.PasswordChangeView.as_view(template_name='app/changepassword.html', 
                                                                 form_class=MyPasswordChangeForm,success_url='/passwordchangedone'),name='passwordchange'),
     path('passwordchangedone/',auth_view.PasswordChangeDoneView.as_view(template_name='app/passwordchangedone.html'),name='passwordchangedone'),

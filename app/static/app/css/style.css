@@ -14,7 +14,7 @@
 
 .goodnessseccont img {
     max-width: 100%;  /* Ensures the image doesn't overflow its container */
-    height: auto;  /* Maintains aspect ratio */
+    height: 100%;  /* Maintains aspect ratio */
 }
 
 .mlkpro {
