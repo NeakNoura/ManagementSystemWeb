@@ -172,25 +172,17 @@ class Checkout(View):
 def plus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET.get('prod_id')
-        # Use filter() to get all cart entries with the same product and user
         cart_items = Cart.objects.filter(Q(product=prod_id) & Q(user=request.user))
-        
-        # Check if cart_items is empty or contains multiple items
         if cart_items.exists():
-            # If multiple cart items, just take the first one
-            c = cart_items.first()  # You could handle logic here if needed
+            c = cart_items.first()  
             c.quantity += 1
             c.save()
         else:
-            # If no cart entry exists, you might need to create a new one
             c = Cart.objects.create(product_id=prod_id, user=request.user, quantity=1)
-        
-        # Calculate the total amount and total cart items
         user = request.user
         cart = Cart.objects.filter(user=user)
         amount = sum(p.quantity * p.product.discounted_price for p in cart)
-        totalamount = amount + 40  # Add shipping or any other charges
-
+        totalamount = amount + 40  
         data = {
             'quantity': c.quantity,
             'amount': amount,
@@ -201,30 +193,22 @@ def plus_cart(request):
 def minus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET.get('prod_id')
-        
-        # Get the cart items for the specified product and user
         cart_items = Cart.objects.filter(Q(product=prod_id) & Q(user=request.user))
-        
-        # If the cart item exists and quantity is more than 1
         if cart_items.exists():
-            c = cart_items.first()  # Get the first cart item
+            c = cart_items.first()
             if c.quantity > 1:
-                c.quantity -= 1  # Decrease quantity by 1
+                c.quantity -= 1 
                 c.save()
             else:
-                # Optionally, delete the cart item if quantity reaches 0 or less
-                c.delete()  # Or set quantity to 0 if you prefer to keep the entry
+                c.delete() 
         else:
             return JsonResponse({'error': 'Item not found in cart'}, status=404)
-
-        # Recalculate the total amount and total cart items
         user = request.user
         cart = Cart.objects.filter(user=user)
         amount = sum(p.quantity * p.product.discounted_price for p in cart)
-        totalamount = amount + 40  # Add shipping or other charges
-
+        totalamount = amount + 40  
         data = {
-            'quantity': c.quantity if cart_items.exists() else 0,  # Return updated quantity
+            'quantity': c.quantity if cart_items.exists() else 0, 
             'amount': amount,
             'totalamount': totalamount
         }
