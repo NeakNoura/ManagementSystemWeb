@@ -9,21 +9,25 @@ from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
 
+
 def home(request):
     totalitem= 0
     if request.user.is_authenticated:
         totalitem = (Cart.objects.filter(user=request.user).count())
-    return render (request, "app/home.html")
+    return render (request, "app/home.html")\
+        
 def about(request):
     totalitem= 0
     if request.user.is_authenticated:
         totalitem = (Cart.objects.filter(user=request.user).count())
     return render (request, "app/about.html",locals())
+
 def contact(request):
     totalitem= 0
     if request.user.is_authenticated:
         totalitem = (Cart.objects.filter(user=request.user).count())
     return render (request, "app/contact.html",locals())
+
 class CategoryView(View):
     
     def get(self,request ,val):
@@ -144,29 +148,38 @@ def show_cart(request):
 
 class Checkout(View):
     def get(self, request):
+        if not request.user.is_authenticated:
+            messages.error(request, "You need to log in to proceed to checkout.")
+            return redirect('login')  # Redirect to the login page if the user is not authenticated
+        
         user = request.user
         add = Customer.objects.filter(user=user)
         cart_items = Cart.objects.filter(user=user)
         famount = 0
         for p in cart_items:
             value = p.quantity * p.product.discounted_price
-            famount = famount + value
+            famount += value
         totalamount = famount + 40
-        client  = razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET))
+        
+        client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
         razoramount = int(totalamount * 100)  
-        data = {"amount":razoramount,"currency":"INR","receipt":"order_rcptid_12"}
+        data = {"amount": razoramount, "currency": "INR", "receipt": "order_rcptid_12"}
         payment_response = client.order.create(data=data)
+        
         print(payment_response)
         order_id = payment_response['id']
         order_status = payment_response['status']
         if order_status == 'created':
-            payment=Payment(user=user,
-                                  amount=totalamount,
-                                  razorpay_order_id = order_id,
-                                  razorpay_payment_status = order_status
-                                  )
-        payment.save()
+            payment = Payment(
+                user=user,
+                amount=totalamount,
+                razorpay_order_id=order_id,
+                razorpay_payment_status=order_status
+            )
+            payment.save()
+        
         return render(request, 'app/checkout.html', locals())
+
 
 
 def plus_cart(request):
@@ -264,11 +277,11 @@ def payment_done(request):
 
         except razorpay.errors.SignatureVerificationError:
             messages.error(request, "Payment failed! Signature mismatch.")
-            return redirect('payment_failed')  # Redirect to failure page (change URL as needed)
+            return redirect('payment_failed')  
 
     except Exception as e:
         messages.error(request, f"An error occurred: {e}")
-        return redirect('payment_failed')  # Redirect to failure page (change URL as needed)
+        return redirect('payment_failed')  
 
 def plus_wishlist(request):
     if request.method == 'GET':

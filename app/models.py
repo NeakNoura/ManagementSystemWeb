@@ -31,9 +31,9 @@ CATEGORY_CHOICES = (
     ('CB', 'Coffee Bean'),
     ('MSC', 'MilkShakeChocolate'),
     ('CFI', 'CoffeeFrapIce'),
-    ('CO', 'Coffee'),
+    ('CO', 'Cup'),
     ('IM', 'IceMocha'),
-    ('CZ', 'Cheese'),
+    ('CE', 'CupExtra'),
     ('IC', 'Ice-Coffee'),
 )
 

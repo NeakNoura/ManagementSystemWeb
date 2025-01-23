@@ -5,16 +5,23 @@
     max-width: 100%;
     height: auto;
 }
-.goodnessseccont {
+.goodnessseccont  {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 }
+/* Set a fixed width and height for all images */
+.img-fluid {
+    width: 200px;   /* Set your preferred width */
+    height: 200px;  /* Set your preferred height */
+    object-fit: cover;  /* Ensures images fill the container without distortion */
+}
 
 .goodnessseccont img {
     max-width: 100%;  /* Ensures the image doesn't overflow its container */
     height: 100%;  /* Maintains aspect ratio */
+    object-fit: contain;  
 }
 
 .mlkpro {
