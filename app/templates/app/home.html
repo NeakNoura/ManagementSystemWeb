@@ -1,4 +1,5 @@
 {% extends 'app/base.html' %} {% load static %} {% block title %}Home{% endblock title %} {% block banner-slider %}
+
 <div
   id="carouselExampleSlidesOnly"
   class="carousel slide"
@@ -8,63 +9,56 @@
     <div class="carousel-item active">
       <img
         src="{% static 'app/images/banner/b1.jpg' %}"
-        class="d-block w-100"
+        class="d-block w-100 h-20"
         alt="Banner 1"
       />
     </div>
     <div class="carousel-item">
       <img
         src="{% static 'app/images/banner/b2.jpg' %}"
-        class="d-block w-100"
+            class="d-block w-100 h-20"
         alt="Banner 2"
       />
     </div>
     <div class="carousel-item">
       <img
         src="{% static 'app/images/banner/b3.jpg' %}"
-        class="d-block w-100"
+               class="d-block w-100 h-20"
         alt="Banner 3"
-      />
-    </div>
-    <div class="carousel-item">
-      <img
-        src="{% static 'app/images/banner/b4.jpg' %}"
-        class="d-block w-100 h-80"
-        alt="Banner 4"
       />
     </div>
   </div>
 </div>
 {% endblock banner-slider %} {% block information %}
 <div class="container">
-  <div class="row bg-success text-center p-5 text-white border-bottom shadow">
+  <div class="row bg-warning text-center p-5 text-black border-bottom shadow">
     <h1>Products</h1>
     <small class="fs-5">
-      You are looking for a coffee that give you a good tast ? It here!!! Our
-      Coffee it a product that have been improve along time ago It have 5
-      Country in South East Asia there are Cambodia,Thailand ,Myanmmar,Laos
-      LPD,Vietnam
+        You are looking for a coffee that gives you a good taste? It's here!!! 
+        Our coffee is a product that has been improved over time. 
+        It comes from 5 countries in Southeast Asia: Cambodia, Thailand, Myanmar, Laos, and Vietnam.
     </small>
-  </div>
+</div>
+
 </div>
 {% endblock information %} {% block main-content %}
 <div class="container">
   <h2 class="text-center">Daily Product Site</h2>
 </div>
 <br /><br />
+
+
 <div class="row justify-content-center">
   <div class="col-md-3 col-sm-6 text-center mb-4">
     <div class="goodnesssec buttermilk smbg">
-      <a href="{% url 'category' 'CB'%}">
+      <a href="{% url 'category' 'B1' %}">
         <div class="goodnessseccont">
           <img
-            src="{% static 'app/images/product/coffee1.png' %}"
-            height="100%"
-            width="100%"
-            class="img-fluid"
-            alt="coffee1 "
+            src="{% static 'app/images/product/burger-1.jpg' %}"
+            class="img-fluid product-img"
+            alt="Burger-Single"
           />
-          <p class="mlkpro">Coffee Bean</p>
+          <p class="mlkpro">Burger-Single</p>
         </div>
       </a>
     </div>
@@ -72,16 +66,14 @@
 
   <div class="col-md-3 col-sm-6 text-center mb-4">
     <div class="goodnesssec buttermilk smbg">
-      <a href="{% url 'category' 'CF'%}">
+      <a href="{% url 'category' 'B2' %}">
         <div class="goodnessseccont">
           <img
-            src="{% static 'app/images/product/coffee2.png' %}"
-            height="100%"
-            width="100%"
-            class="img-fluid"
-            alt="coffee2"
+            src="{% static 'app/images/product/burger-2.jpg' %}"
+            class="img-fluid product-img"
+            alt="Burger-Couple"
           />
-          <p class="mlkpro">Cup</p>
+          <p class="mlkpro">Burger-Couple</p>
         </div>
       </a>
     </div>
@@ -89,16 +81,32 @@
 
   <div class="col-md-3 col-sm-6 text-center mb-4">
     <div class="goodnesssec buttermilk smbg">
-      <a href="{% url 'category' 'CF'%}">
+      <a href="{% url 'category' 'B3' %}">
         <div class="goodnessseccont">
           <img
-            src="{% static 'app/images/product/coffee3.png' %}"
-            height="100%"
-            width="100%"
-            class="img-fluid"
-            alt="coffee3"
+            src="{% static 'app/images/product/burger-3.jpg' %}"
+            class="img-fluid product-img"
+            alt="Burger-Family"
           />
-          <p class="mlkpro">Coffee</p>
+          <p class="mlkpro">Burger-Family</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<div class="row justify-content-center">
+  <div class="col-md-3 col-sm-6 text-center mb-4">
+    <div class="goodnesssec buttermilk smbg">
+      <a href="{% url 'category' 'D1' %}">
+        <div class="goodnessseccont">
+          <img
+            src="{% static 'app/images/product/dish-1.jpg' %}"
+            class="img-fluid product-img"
+            alt="Beef-1"
+          />
+          <p class="mlkpro">Beef-1</p>
         </div>
       </a>
     </div>
@@ -106,88 +114,136 @@
 
   <div class="col-md-3 col-sm-6 text-center mb-4">
     <div class="goodnesssec buttermilk smbg">
-      <a href="{% url 'category' 'MSC'%}">
+      <a href="{% url 'category' 'D2' %}">
         <div class="goodnessseccont">
           <img
-            src="{% static 'app/images/product/coffee4.png' %}"
-            height="100%"
-            width="100%"
-            class="img-fluid"
-            alt="coffee4 "
+            src="{% static 'app/images/product/dish-2.jpg' %}"
+            class="img-fluid product-img"
+            alt="Beef-2"
           />
-          <p class="mlkpro">MilkShake-chocolate</p>
+          <p class="mlkpro">Beef-2</p>
         </div>
       </a>
     </div>
   </div>
-  <div class="row justify-content-center">
-    <div class="col-md-3 col-sm-6 text-center mb-4">
-      <div class="goodnesssec buttermilk smbg">
-        <a href="{% url 'category' 'CFI'%}">
-          <div class="goodnessseccont">
-            <img
-              src="{% static 'app/images/product/coffee5.jpg' %}"
-              height="100%"
-              width="100%"
-              class="img-fluid"
-              alt="coffee5 "
-            />
-            <p class="mlkpro">Coffee Frape</p>
-          </div>
-        </a>
-      </div>
-    </div>
-    <div class="col-md-3 col-sm-6 text-center mb-4">
-      <div class="goodnesssec buttermilk smbg">
-        <a href="{% url 'category' 'CE'%}">
-          <div class="goodnessseccont">
-            <img
-              src="{% static 'app/images/product/coffee6.png' %}"
-              height="100%"
-              width="100%"
-              class="img-fluid"
-              alt="coffee6"
-            />
-            <p class="mlkpro">Cup Extra</p>
-          </div>
-        </a>
-      </div>
-    </div>
 
-    <div class="col-md-3 col-sm-6 text-center mb-4">
-      <div class="goodnesssec buttermilk smbg">
-        <a href="{% url 'category' 'CF'%}">
-          <div class="goodnessseccont">
-            <img
-              src="{% static 'app/images/product/coffee7.png' %}"
-              height="100%"
-              width="100%"
-              class="img-fluid"
-              alt="coffee7"
-            />
-            <p class="mlkpro">Ice Tnole</p>
-          </div>
-        </a>
-      </div>
-    </div>
-
-    <div class="col-md-3 col-sm-6 text-center mb-4">
-      <div class="goodnesssec buttermilk smbg">
-        <a href="{% url 'category' 'IM'%}">
-          <div class="goodnessseccont">
-            <img
-              src="{% static 'app/images/product/coffee8.png' %}"
-              height="100%"
-              width="100%"
-              class="img-fluid"
-              alt="coffee8 "
-            />
-            <p class="mlkpro">Ice Mocha</p>
-          </div>
-        </a>
-      </div>
+  <div class="col-md-3 col-sm-6 text-center mb-4">
+    <div class="goodnesssec buttermilk smbg">
+      <a href="{% url 'category' 'D3' %}">
+        <div class="goodnessseccont">
+          <img
+            src="{% static 'app/images/product/dish-3.jpg' %}"
+            class="img-fluid product-img"
+            alt="Beef-3"
+          />
+          <p class="mlkpro">Beef-3</p>
+        </div>
+      </a>
     </div>
   </div>
+</div>
+
+
+<div class="row justify-content-center">
+<div class="col-md-3 col-sm-6 text-center mb-4">
+  <div class="goodnesssec buttermilk smbg">
+    <a href="{% url 'category' 'D7'%}">
+      <div class="goodnessseccont">
+        <img
+            src="{% static 'app/images/product/dish-7.jpg' %}"
+         
+          width="100%"
+          class="img-fluid"
+          alt="coffee8 "
+        />
+        <p class="mlkpro">Beef-7</p>
+      </div>
+    </a>
+  </div>
+</div>
+<div class="col-md-3 col-sm-6 text-center mb-4">
+  <div class="goodnesssec buttermilk smbg">
+    <a href="{% url 'category' 'D8'%}">
+      <div class="goodnessseccont">
+        <img
+            src="{% static 'app/images/product/dish-8.jpg' %}"
+        
+          width="100%"
+          class="img-fluid"
+          alt="coffee8 "
+        />
+        <p class="mlkpro">Beef-8</p>
+      </div>
+    </a>
+  </div>
+</div>
+<div class="col-md-3 col-sm-6 text-center mb-4">
+  <div class="goodnesssec buttermilk smbg">
+    <a href="{% url 'category' 'I1'%}">
+      <div class="goodnessseccont">
+        <img
+            src="{% static 'app/images/product/image_1.jpg' %}"
+         
+          width="100%"
+          class="img-fluid"
+          alt="coffee8 "
+        />
+        <p class="mlkpro">Spagatti</p>
+      </div>
+    </a>
+  </div>
+</div>
+</div>
+
+
+
+<div class="row justify-content-center">
+  <div class="col-md-3 col-sm-6 text-center mb-4">
+    <div class="goodnesssec buttermilk smbg">
+      <a href="{% url 'category' 'I2' %}">
+        <div class="goodnessseccont">
+          <img
+            src="{% static 'app/images/product/image_2.jpg' %}"
+            class="img-fluid product-img"
+            alt="Pizza"
+          />
+          <p class="mlkpro">Pizza</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-sm-6 text-center mb-4">
+    <div class="goodnesssec buttermilk smbg">
+      <a href="{% url 'category' 'I3' %}">
+        <div class="goodnessseccont">
+          <img
+            src="{% static 'app/images/product/image_3.jpg' %}"
+            class="img-fluid product-img"
+            alt="Desserts"
+          />
+          <p class="mlkpro">Desserts</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-sm-6 text-center mb-4">
+    <div class="goodnesssec buttermilk smbg">
+      <a href="{% url 'category' 'I4' %}">
+        <div class="goodnessseccont">
+          <img
+            src="{% static 'app/images/product/image_4.jpg' %}"
+            class="img-fluid product-img"
+            alt="Pizza"
+          />
+          <p class="mlkpro">Pizza</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
 
   {% endblock main-content %}
 </div>

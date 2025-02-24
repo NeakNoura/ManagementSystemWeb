@@ -12,10 +12,11 @@
     flex-direction: column;
 }
 /* Set a fixed width and height for all images */
-.img-fluid {
-    width: 200px;   /* Set your preferred width */
-    height: 200px;  /* Set your preferred height */
+.img-fluid product-img {
+    width: 100%;   /* Set your preferred width */
+    height: 100%;  /* Set your preferred height */
     object-fit: cover;  /* Ensures images fill the container without distortion */
+    border-radius: 10px;
 }
 
 .goodnessseccont img {

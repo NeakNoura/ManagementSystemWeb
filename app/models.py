@@ -27,14 +27,21 @@ STATE_CHOICES = (
 )
 
 CATEGORY_CHOICES = (
-    ('CF', 'Coffee'),
-    ('CB', 'Coffee Bean'),
-    ('MSC', 'MilkShakeChocolate'),
-    ('CFI', 'CoffeeFrapIce'),
-    ('CO', 'Cup'),
-    ('IM', 'IceMocha'),
-    ('CE', 'CupExtra'),
-    ('IC', 'Ice-Coffee'),
+    ('B1', 'Burger-1'),
+    ('B2', 'Burger-2'),
+    ('B3', 'Burger-3'),
+    ('D1', 'Dish-1'),
+    ('D2', 'Dish-2'),
+    ('D3', 'Dish-3'),
+    ('D4', 'Dish-4'),
+    ('D5', 'Dish-5'),
+    ('D6', 'Dish-6'),
+    ('D7', 'Dish-7'),
+    ('D8', 'Dish-8'),
+    ('I1', 'Image-1'),
+    ('I2', 'Image-2'),
+    ('I3', 'Image-3'),
+    ('I4', 'Image-4'),
 )
 
 class Product(models.Model):
@@ -90,9 +97,6 @@ class Payment(models.Model):
     def __str__(self):
         return f"Payment for {self.user.username} - {self.amount}"
 
-
-    
-    
 class WishList(models.Model):
     user  = models.ForeignKey(User,on_delete=models.CASCADE)
     product = models.ForeignKey(Product,on_delete=models.CASCADE)

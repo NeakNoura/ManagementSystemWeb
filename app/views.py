@@ -129,28 +129,29 @@ def orders(request):
 
 
 def add_to_cart(request):
-    user=request.user
-    product_id=request.GET.get('prod_id')
-    product = Product.objects.get(id=product_id)
-    Cart(user=user,product=product).save()
-    return redirect("/cart")
+    user = request.user
+    product_id = request.GET.get('prod_id')
+    next_url = request.GET.get('next', '/') 
+
+    if product_id:
+        product = Product.objects.get(id=product_id)
+        Cart.objects.create(user=user, product=product)
+    
+    return redirect(next_url) 
     
 def show_cart(request):
-    user = request.user
-    cart = Cart.objects.filter(user=user)
-    amount = 0
-    for p in cart:
-        value = p.quantity * p.product.discounted_price
-        amount = amount + value
-    totalamount = amount+40
-
-    return render(request,'app/addtocart.html',locals())
+    totalitem = 0
+    
+    totalitem = Cart.objects.filter(user=request.user).count()
+    
+    context = {'totalitem': totalitem}
+    return render(request, 'app/addtocart.html', context)
 
 class Checkout(View):
     def get(self, request):
         if not request.user.is_authenticated:
             messages.error(request, "You need to log in to proceed to checkout.")
-            return redirect('login')  # Redirect to the login page if the user is not authenticated
+            return redirect('login')  
         
         user = request.user
         add = Customer.objects.filter(user=user)
@@ -227,25 +228,27 @@ def minus_cart(request):
         }
         return JsonResponse(data)
 
-    
 def remove_cart(request):
     if request.method == 'GET':
-        prod_id = request.GET['prod_id']
-        c = Cart.objects.get(Q(product=prod_id) &  Q(user=request.user))
-        c.delete()
-        user = request.user
-        cart = Cart.objects.filter(user=user)
-        amount = 0
-        for p in cart:
-            value = p.quantity * p.product.discounted_price
-            amount = amount + value
-        totalamount = amount+40
-        data={
-              'amount':amount,
-              'totalamount': totalamount 
-             }
-        return JsonResponse(data)
+        prod_id = request.GET.get('prod_id')  
+        if prod_id:
+            cart_item = Cart.objects.filter(Q(product__id=prod_id) & Q(user=request.user)).first()
+            if cart_item:
+                if cart_item.quantity > 1:
+                    cart_item.quantity -= 1  
+                    cart_item.save()
+                else:
+                    cart_item.delete()  
+            cart = Cart.objects.filter(user=request.user)
+            amount = sum(p.quantity * p.product.discounted_price for p in cart)
+            totalamount = amount + 40  
+            data = {
+                'amount': amount,
+                'totalamount': totalamount
+            }
+            return JsonResponse(data)
 
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 def payment_done(request):
     try:
         razorpay_order_id = request.GET.get('order_id')
