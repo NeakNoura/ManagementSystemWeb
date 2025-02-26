@@ -7,6 +7,8 @@ from django.db.models import Count
 from . forms import CustomerRegistrationForm,CustomerProfileForm
 from django.contrib import messages
 from django.db.models import Q
+from django.shortcuts import render, redirect
+from .models import Cart, Product
 from django.conf import settings
 
 
@@ -123,29 +125,54 @@ class updateAddress(View):
         else:
             messages.warning(request, "Invalid Input Data")
             return render(request, 'app/updateAddress.html', {'form': form, 'add': add})
+        
+        
+        
 def orders(request):
     orders_placed = OrderPlaced.objects.filter(user=request.user)
     return render(request, 'app/orders.html', {'orders_placed': orders_placed})
 
 
+
 def add_to_cart(request):
     user = request.user
     product_id = request.GET.get('prod_id')
-    next_url = request.GET.get('next', '/') 
+    next_url = request.GET.get('next', '/')
 
     if product_id:
         product = Product.objects.get(id=product_id)
-        Cart.objects.create(user=user, product=product)
-    
-    return redirect(next_url) 
-    
+        cart_item, created = Cart.objects.get_or_create(user=user, product=product)
+
+        if not created:
+            cart_item.quantity += 1  # Increase quantity if product already exists
+            cart_item.save()
+
+    return redirect(next_url)
+
+
 def show_cart(request):
-    totalitem = 0
+    totalitem = 0  
+    if request.user.is_authenticated:  
+        cart = Cart.objects.filter(user=request.user)
+        totalitem = cart.count()  
+
+        if cart.exists():  
+            amount = sum(item.product.discounted_price * item.quantity for item in cart)
+            totalamount = amount  # Modify if needed
+        else:
+            amount = 0
+            totalamount = 0
+
+        context = {
+            'cart': cart,  # Pass cart items to the template
+            'amount': amount,
+            'totalamount': totalamount,
+            'totalitem': totalitem
+        }
+        return render(request, 'app/addtocart.html', context)
     
-    totalitem = Cart.objects.filter(user=request.user).count()
-    
-    context = {'totalitem': totalitem}
-    return render(request, 'app/addtocart.html', context)
+    return render(request, 'app/addtocart.html', {'cart': None, 'totalitem': totalitem})  # If user is not logged in
+
 
 class Checkout(View):
     def get(self, request):
