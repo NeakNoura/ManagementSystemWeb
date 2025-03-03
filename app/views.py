@@ -16,7 +16,7 @@ def home(request):
     totalitem= 0
     if request.user.is_authenticated:
         totalitem = (Cart.objects.filter(user=request.user).count())
-    return render (request, "app/home.html")\
+    return render (request, "app/home.html")
         
 def about(request):
     totalitem= 0
