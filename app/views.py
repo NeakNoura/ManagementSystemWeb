@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from .models import Cart, Product
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 
 
 def home(request):
@@ -140,12 +141,26 @@ def add_to_cart(request):
     next_url = request.GET.get('next', '/')
 
     if product_id:
-        product = Product.objects.get(id=product_id)
-        cart_item, created = Cart.objects.get_or_create(user=user, product=product)
+        product = get_object_or_404(Product, id=product_id)
 
-        if not created:
-            cart_item.quantity += 1  # Increase quantity if product already exists
+
+        cart_items = Cart.objects.filter(user=user, product=product)
+
+        if cart_items.exists():
+            cart_item = cart_items.first()  
+            cart_item.quantity += 1
             cart_item.save()
+
+
+            if cart_items.count() > 1:
+                total_quantity = sum(item.quantity for item in cart_items)
+                cart_item.quantity = total_quantity
+                cart_item.save()
+
+              
+                cart_items.exclude(id=cart_item.id).delete()
+        else:
+            Cart.objects.create(user=user, product=product, quantity=1)
 
     return redirect(next_url)
 
@@ -158,7 +173,7 @@ def show_cart(request):
 
         if cart.exists():  
             amount = sum(item.product.discounted_price * item.quantity for item in cart)
-            totalamount = amount  # Modify if needed
+            totalamount = amount  
         else:
             amount = 0
             totalamount = 0
@@ -276,7 +291,6 @@ def remove_cart(request):
             return JsonResponse(data)
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
-
 
 def payment_done(request):
     try:
