@@ -276,6 +276,8 @@ def remove_cart(request):
             return JsonResponse(data)
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
 def payment_done(request):
     try:
         razorpay_order_id = request.GET.get('order_id')
