@@ -270,27 +270,44 @@ def minus_cart(request):
         }
         return JsonResponse(data)
 
+
 def remove_cart(request):
     if request.method == 'GET':
         prod_id = request.GET.get('prod_id')  
-        if prod_id:
-            cart_item = Cart.objects.filter(Q(product__id=prod_id) & Q(user=request.user)).first()
-            if cart_item:
-                if cart_item.quantity > 1:
-                    cart_item.quantity -= 1  
-                    cart_item.save()
-                else:
-                    cart_item.delete()  
-            cart = Cart.objects.filter(user=request.user)
-            amount = sum(p.quantity * p.product.discounted_price for p in cart)
-            totalamount = amount + 40  
-            data = {
-                'amount': amount,
-                'totalamount': totalamount
-            }
-            return JsonResponse(data)
+        print("Received request to remove product with ID:", prod_id)
 
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+        if not prod_id:
+            return JsonResponse({'error': 'Product ID is required'}, status=400)
+
+        user = request.user
+        cart_item = Cart.objects.filter(Q(product__id=prod_id) & Q(user=user)).first()
+
+        if not cart_item:
+            print("Cart item not found!")
+            return JsonResponse({'error': 'Product not found in cart'}, status=404)
+
+        print(f"Before update: {cart_item.quantity}")
+
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1  
+            cart_item.save()
+            print(f"After update: {cart_item.quantity}")
+        else:
+            print("Deleting product from cart")
+            cart_item.delete()
+
+        # Recalculate total
+        cart = Cart.objects.filter(user=user)
+        amount = sum(p.quantity * p.product.discounted_price for p in cart)
+        totalamount = amount + 40  
+
+        return JsonResponse({
+            'amount': amount,
+            'totalamount': totalamount,
+            'quantity': cart_item.quantity if cart_item.quantity > 0 else 0
+        })
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def payment_done(request):
     try:
